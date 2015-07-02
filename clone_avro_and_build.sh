@@ -19,7 +19,7 @@ set -eux
 STATIC=0
 [ "${1:-}" = '--static' ] && STATIC=1
 
-MYDIR=$(dirname $(readlink -f "$0"))
+MYDIR=$(python -c "import os,sys; print os.getcwd()" "$0")
 
 cd $MYDIR
 
@@ -73,7 +73,7 @@ fi
 
 python setup.py build
 
-export PYTHONPATH=$(readlink -e build/lib*):$(readlink -e $AVRO/lang/py/build/lib*)
+export PYTHONPATH=$(python -c "import os, sys; from glob import glob; print os.path.abspath(glob('build/lib*')[0])"):$(python -c"import os, sys; from glob import glob; print glob('$AVRO/lang/py/build/lib*')[0]")
 
 cd tests
 py.test -sv .
